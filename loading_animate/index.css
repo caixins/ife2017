@@ -1,0 +1,110 @@
+        #container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        #arc {
+            position: absolute;
+            top: 0;
+            box-sizing: border-box;
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgb(255, 41, 140);
+            border-radius: 100px;
+            border-top-color: transparent;
+            animation: 1s arcAnimate linear infinite
+        }
+        
+        .half-circle {
+            border: 75px solid rgb(251, 139, 189);
+            border-radius: 50%;
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            transform: rotate(-45deg)
+        }
+        
+        #full-circle {
+            border: 75px solid rgb(251, 139, 189);
+            border-left-color: rgb(255, 41, 140);
+            border-top-color: rgb(255, 41, 140);
+            border-radius: 50%;
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            transform: rotate(-45deg);
+        }
+        
+        .left {
+            border-color: rgb(255, 41, 140);
+            border-left-color: transparent;
+            border-top-color: transparent;
+            animation: 2s leftAnimate linear infinite;
+            z-index: 6;
+        }
+        
+        .right {
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+            animation: 2s rightAnimate linear infinite;
+            z-index: 5
+        }
+        
+        @keyframes arcAnimate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg)
+            }
+        }
+        
+        @keyframes leftAnimate {
+            0% {
+                transform: rotate(-45deg)
+            }
+            25% {
+                transform: rotate(135deg)
+            }
+            50% {
+                transform: rotate(135deg);
+            }
+            75% {
+                transform: rotate(315deg)
+            }
+            100% {
+                transform: rotate(315deg);
+            }
+        }
+        
+        @keyframes rightAnimate {
+            0% {
+                transform: rotate(-45deg);
+                z-index: 6;
+            }
+            25% {
+                transform: rotate(-45deg)
+            }
+            50% {
+                transform: rotate(135deg);
+                z-index: 6;
+            }
+            50.1% {
+                transform: rotate(135deg);
+                z-index: 5;
+            }
+            75% {
+                transform: rotate(135deg);
+                 z-index: 5;
+            }
+            99% {
+                transform: rotate(315deg);
+                z-index: 5;
+            }
+            100% {
+                transform: rotate(315deg);
+                z-index: 6;
+            }
+        }
