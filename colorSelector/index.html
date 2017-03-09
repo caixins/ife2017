@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>canvas 颜色选择器</title>
+    <style type="text/css">
+    * {
+        margin: 0;
+        padding: 0
+    }
+    
+    #content {
+        display: flex;
+        justify-content: center;
+    }
+    
+    #colorCanvas {
+        border: 1px solid #eee
+    }
+    
+    #lightnessCanvas {
+        border: 1px solid #eee
+    }
+    
+    #content_right {
+        margin-left: 20px
+    }
+    
+    #content_right input {
+        width: 50px;
+        border: 1px solid #ccc
+    }
+    #content_right #color {
+        width: 70px;
+        height: 30px;
+        margin-top: 10px;
+        border: 1px solid #ccc
+    }
+    </style>
+</head>
+
+<body>
+    <div id="content">
+        <div id="content_left">
+            <canvas id="lightnessCanvas" width="300px" height="300px"></canvas>
+            <canvas id="colorCanvas" width="20px" height="300px"></canvas>
+        </div>
+        <div id="content_right">
+            <label>
+                R
+                <input type="text" id="R"></input>
+            </label>
+            <br>
+            <label>
+                G
+                <input type="text" id="G"></input>
+            </label>
+            <br>
+            <label>
+                B
+                <input type="text" id="B"></input>
+            </label>
+            <div id="color">
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    var $ = function(str) {
+        return document.getElementById(str)
+    }
+    var Picker = function() {
+        var me = this;
+        this.colorCanvas = $('colorCanvas');
+        this.colorCxt = colorCanvas.getContext('2d');
+        this.lightnessCanvas = $('lightnessCanvas');
+        this.lightCxt = lightnessCanvas.getContext('2d');
+        this.colorRange = {
+            0: 'rgba(256,0,0,1)',
+            0.2: 'rgba(256,256,0,1)',
+            0.4: 'rgba(0,256,256,1)',
+            0.6: 'rgba(0,256,0,1)',
+            0.8: 'rgba(256,0,256,1)',
+            1: 'rgba(256,0,0,1)'
+        };
+        this.drawColor();
+        this.colorCanvas.onclick = function(e) {
+            var point = me.getOffset(e);
+            var color = me.getRgbColor(point, me.colorCxt, colorCanvas);
+            me.setLinghtNess('rgb(' + color.join(',') + ')')
+        }
+        this.lightnessCanvas.onclick = function(e) {
+            var point = me.getOffset(e);
+            var color = me.getRgbColor(point, me.lightCxt, me.lightnessCanvas);
+            $('R').value = color[0];
+            $('G').value = color[1];
+            $('B').value = color[2];
+            $('color').style.backgroundColor = 'rgb(' + color.join(',') + ')'
+        }
+    }
+    Picker.prototype.drawColor = function() {
+        var grad = this.colorCxt.createLinearGradient(0, 0, 0, this.colorCanvas.height);
+        for (var range in this.colorRange) {
+            grad.addColorStop(range, this.colorRange[range]);
+        };
+        this.colorCxt.fillStyle = grad;
+        this.colorCxt.fillRect(0, 0, this.colorCanvas.width, this.colorCanvas.height);
+    }
+    Picker.prototype.setLinghtNess = function(color) {
+        var grad = this.lightCxt.createLinearGradient(0, 0, this.lightnessCanvas.width, lightnessCanvas.height);
+        grad.addColorStop(0, 'rgb(256,256,256)');
+        grad.addColorStop(0.5, color);
+        grad.addColorStop(1, 'rgb(0,0,0)');
+        this.lightCxt.fillStyle = grad;
+        this.lightCxt.fillRect(0, 0, this.lightnessCanvas.width, lightnessCanvas.height);
+    }
+    Picker.prototype.getRgbColor = function(point, cxt, canvas) {
+        var imgData = cxt.getImageData(0, 0, canvas.width, canvas.height);
+        var data = imgData.data;
+        var i = (point.y * canvas.width + point.x) * 4
+        return [data[i], data[i + 1], data[i + 2]];
+    }
+    Picker.prototype.getOffset = function(e) {
+        e = e || window.event;
+        var cur = e.target || e.srcElement;
+        if (cur.offsetX) {
+            return {
+                x: parseInt(cur.offsetX),
+                y: parseInt(cur.offsetY)
+            }
+        } else {
+            var client = cur.getBoundingClientRect();
+            return {
+                x: parseInt(e.clientX - client.left),
+                y: parseInt(e.clientY - client.top)
+            }
+        }
+    }
+    var picker = new Picker();
+    </script>
+</body>
+
+</html>
