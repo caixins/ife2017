@@ -4,46 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
+    <script type="text/javascript" src="vue_1.js"></script>
 </head>
 
 <body>
     <script type="text/javascript">
-    function ObjServer(data) {
-        this.data = data;
-        this.walk(data);
-    }
-    var p = ObjServer.prototype;
-    p.walk = function(data) {
-        let val;
-        for (let key in data) {
-            if (data.hasOwnProperty(key)) {
-                val = data[key];
-                if (typeof val == 'object') {
-                    new ObjServer(val)
-                }
-                this.convert(key, val);
-            }
-        }
-    };
-    p.convert = function(key, val) {
-        Object.defineProperty(this.data, key, {
-            enumerable: true,
-            configurable: true,
-            get: function() {
-                console.log('你访问了' + key);
-                return val
-            },
-            set: function(value) {
-                console.log('你设置了' + key);
-                console.log('新的' + key + '=' + value);
-                if (value == val) return;
-                if (typeof value == 'object') {
-                    new ObjServer(value)
-                }
-                val = value;
-            }
-        })
-    }
     let app1 = new ObjServer({
         name: 'youngwind',
         age: 25
@@ -55,8 +20,13 @@
     });
     app1.data.name
     app1.data.age = 100;
-    app2.data.university
-    app2.data.major = 'science'
+    app2.data.university;
+    app2.data.major = 'science';
+
+    app1.$watch('age',function(age){
+        console.log(`我的年纪变成了${age}岁`)
+    })
+    app1.data.age=200;
     </script>
 </body>
 
